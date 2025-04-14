@@ -6,14 +6,15 @@ This project utilizes an ESP32-C3 microcontroller and an ST7789 TFT display to c
 
 ## Hardware Requirements
 
+*   **Power meter:** Fox Energy 1 single-phase energy consumption monitor
 *   **Microcontroller:** ESP32-C3 Super Mini
 *   **Display:** 2.0 ST7789 TFT/IPS SPI Display (240x320)
 *   **Wiring:** Connect the ST7789 display to the ESP32-C3 using SPI:
-    *   TFT `CS` -> ESP32-C3 `GPIO7`
-    *   TFT `DC` -> ESP32-C3 `GPIO2`
-    *   TFT `RST` -> ESP32-C3 `GPIO3`
-    *   TFT `SDA`/`MOSI` -> ESP32-C3 `GPIO6` (Default MOSI)
-    *   TFT `SCL`/`SCK` -> ESP32-C3 `GPIO4` (Default SCK)
+    *   TFT `CS` -> ESP32-C3 `GPIO7` (Default SPI SS)
+    *   TFT `DC` -> ESP32-C3 `GPIO2` (or another unused GPIO Pin)
+    *   TFT `RST` -> ESP32-C3 `GPIO3` (or another unused GPIO Pin)
+    *   TFT `SDA`/`MOSI` -> ESP32-C3 `GPIO6` (Default SPI MOSI)
+    *   TFT `SCL`/`SCK` -> ESP32-C3 `GPIO4` (Default SPI SCK)
     *   TFT `GND` -> ESP32-C3 `GND`
     *   TFT `VCC` -> ESP32-C3 `3V3`
 
