@@ -87,3 +87,10 @@ Debug:
 ## License
 
 Public Domain / CC0 1.0 Universal
+
+## Authors
+
+AI models used:
+
+- v2 - Gemini 2.5 Pro Preview 03-25
+- v3 - Claude Sonnet 4.5 (Thinking) + Gemini 3 Pro (High)
