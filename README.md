@@ -34,7 +34,13 @@ This project utilizes an ESP32-C3 microcontroller and an ST7789 TFT display to c
     *   `HTTPClient` (usually included with ESP32 core)
     *   `Time` (usually included with ESP32 core)
 
-## Configuration
+## Configuration (v3)
+
+Before uploading, configure secrets.h and set the SSID/password for WIFI and FOX Energy API endpoint.
+
+Other config options are in config.h.
+
+## Configuration (v1/v2)
 
 Before uploading, configure the settings within the desired `.ino` file (e.g., `fox_energy1_st7789_display_v2.ino`):
 
@@ -52,10 +58,11 @@ Before uploading, configure the settings within the desired `.ino` file (e.g., `
 
 ## Files Overview
 
-*   **`fox_energy1_st7789_display_v2.ino`:** The most recent and feature-complete version, featuring NTP time, temperature, dynamic power colors, and flicker reduction. Recommended starting point.
+*   **`fox_energy1_st7789_display_v3.ino`:** Current stable, reworked code with flicker-free display. Recommended starting point.
 
 Other version for testing purposes:
 
+*   **`fox_energy1_st7789_display_v2.ino`:** Previous stable, feature-complete version, featuring NTP time, temperature, dynamic power colors, and flicker reduction.
 *   **`fox_energy1_st7789_display_v1.ino`:** An earlier version of the display logic.
 *   **`claude_fox_horizontal.ino` / `claude_fox_pivot.ino`:** Versions exploring different display orientations (horizontal/vertical) and UI.
 *   **`gemini_fox.ino`:** Yet another earlier version of the display logic.
