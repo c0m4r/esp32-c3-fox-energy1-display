@@ -130,6 +130,147 @@ public:
     }
     
     /**
+     * Convert grayscale value (0-255) to RGB565 format
+     */
+    uint16_t grayToRGB565(uint8_t gray) {
+        uint16_t r = (gray >> 3) & 0x1F;
+        uint16_t g = (gray >> 2) & 0x3F;
+        uint16_t b = (gray >> 3) & 0x1F;
+        return (r << 11) | (g << 5) | b;
+    }
+    
+    /**
+     * Draw a single frame of the startup animation to the display using strip buffering
+     * This renders the entire screen flicker-free by building each strip in a canvas
+     */
+    void drawStartupFrame(GFXcanvas16* strip, int strip_h, uint16_t bgColor, 
+                          uint16_t textColor, bool showText,
+                          const char* title, const char* subtitle,
+                          int title_x, int title_y, int sub_x, int sub_y) {
+        
+        int screen_h = tft->height();
+        int screen_w = tft->width();
+        
+        // Render screen in horizontal strips
+        for (int strip_y = 0; strip_y < screen_h; strip_y += strip_h) {
+            int current_strip_h = min(strip_h, screen_h - strip_y);
+            
+            // Clear strip with background color
+            strip->fillScreen(bgColor);
+            
+            if (showText) {
+                // Check if title overlaps this strip
+                int title_h = 21;  // Approximate height for text size 3
+                if (title_y < strip_y + current_strip_h && title_y + title_h > strip_y) {
+                    strip->setTextColor(textColor);
+                    strip->setTextSize(3);
+                    strip->setCursor(title_x, title_y - strip_y);
+                    strip->print(title);
+                }
+                
+                // Check if subtitle overlaps this strip
+                int sub_h = 14;  // Approximate height for text size 2
+                if (sub_y < strip_y + current_strip_h && sub_y + sub_h > strip_y) {
+                    strip->setTextColor(textColor);
+                    strip->setTextSize(2);
+                    strip->setCursor(sub_x, sub_y - strip_y);
+                    strip->print(subtitle);
+                }
+            }
+            
+            // Flush strip to display
+            tft->drawRGBBitmap(0, strip_y, strip->getBuffer(), screen_w, current_strip_h);
+        }
+    }
+    
+    /**
+     * Draw startup animation with smooth fade effects using buffered rendering
+     * Sequence: black -> fade to white -> show text -> fade out text -> fade to black
+     */
+    void drawStartupAnimation() {
+        const char* title = "ESP32-C3";
+        const char* subtitle = "Energy Monitor";
+        
+        int16_t x1, y1;
+        uint16_t tw, th, sw, sh;
+        
+        // Calculate text positions
+        tft->setTextSize(3);
+        tft->getTextBounds(title, 0, 0, &x1, &y1, &tw, &th);
+        int title_x = (tft->width() - tw) / 2;
+        int title_y = (tft->height() / 2) - 20;
+        
+        tft->setTextSize(2);
+        tft->getTextBounds(subtitle, 0, 0, &x1, &y1, &sw, &sh);
+        int sub_x = (tft->width() - sw) / 2;
+        int sub_y = title_y + th + 15;
+        
+        // Allocate strip buffer (320x60 = 38.4KB - fits in ESP32-C3 RAM)
+        const int STRIP_HEIGHT = 60;
+        GFXcanvas16* strip = new GFXcanvas16(320, STRIP_HEIGHT);
+        
+        if (!strip || !strip->getBuffer()) {
+            // Fallback to non-buffered if allocation fails
+            Serial.println("Strip buffer allocation failed, using direct rendering");
+            tft->fillScreen(ST77XX_BLACK);
+            delay(500);
+            tft->fillScreen(ST77XX_WHITE);
+            tft->setTextColor(ST77XX_BLACK);
+            tft->setTextSize(3);
+            tft->setCursor(title_x, title_y);
+            tft->print(title);
+            tft->setTextSize(2);
+            tft->setCursor(sub_x, sub_y);
+            tft->print(subtitle);
+            delay(1500);
+            tft->fillScreen(ST77XX_BLACK);
+            if (strip) delete strip;
+            return;
+        }
+        
+        Serial.println("Using buffered startup animation");
+        
+        // Step 1: Start with black screen
+        drawStartupFrame(strip, STRIP_HEIGHT, ST77XX_BLACK, ST77XX_BLACK, false,
+                         title, subtitle, title_x, title_y, sub_x, sub_y);
+        delay(300);
+        
+        // Step 2: Fade in white background (black -> white)
+        for (int i = 0; i <= 255; i += 20) {
+            uint16_t color = grayToRGB565(i);
+            drawStartupFrame(strip, STRIP_HEIGHT, color, color, false,
+                             title, subtitle, title_x, title_y, sub_x, sub_y);
+            delay(25);
+        }
+        
+        // Step 3: Show text (instant appear on white background)
+        drawStartupFrame(strip, STRIP_HEIGHT, ST77XX_WHITE, ST77XX_BLACK, true,
+                         title, subtitle, title_x, title_y, sub_x, sub_y);
+        delay(1500);
+        
+        // Step 4: Fade out everything together (white with text -> black)
+        for (int i = 255; i >= 0; i -= 20) {
+            uint16_t bgColor = grayToRGB565(i);
+            bool showText = (i > 30);
+            int textGray = max(0, i - 80);
+            uint16_t textColor = grayToRGB565(textGray);
+            
+            drawStartupFrame(strip, STRIP_HEIGHT, bgColor, textColor, showText,
+                             title, subtitle, title_x, title_y, sub_x, sub_y);
+            delay(30);
+        }
+        
+        // Final black screen
+        drawStartupFrame(strip, STRIP_HEIGHT, ST77XX_BLACK, ST77XX_BLACK, false,
+                         title, subtitle, title_x, title_y, sub_x, sub_y);
+        delay(100);
+        
+        // Free the strip buffer
+        delete strip;
+        Serial.println("Startup animation complete");
+    }
+    
+    /**
      * Draw initial UI structure
      */
     void drawInitialUI() {

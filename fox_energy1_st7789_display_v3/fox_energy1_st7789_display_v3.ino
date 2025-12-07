@@ -96,8 +96,7 @@ void setup() {
     
     // Initialize display first
     displayMgr.begin();
-    displayMgr.drawFullScreenMessage("Starting...", 2, ST77XX_WHITE);
-    delay(500);
+    displayMgr.drawStartupAnimation();
     
     // Initialize WiFi manager
     wifiMgr.begin();
