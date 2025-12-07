@@ -102,14 +102,24 @@ void setup() {
     // Initialize WiFi manager
     wifiMgr.begin();
     
-    // Attempt WiFi connection
+    // Attempt WiFi connection with infinite retry
     Serial.println("Attempting WiFi connection...");
     displayMgr.drawFullScreenMessage("Connecting WiFi...", 2, ST77XX_YELLOW);
     
-    if (!wifiMgr.connect()) {
-        Serial.println("FATAL: WiFi connection failed!");
-        displayMgr.drawFullScreenMessage("WiFi Failed!", 3, ST77XX_RED);
-        while (true) { delay(1000); } // Halt execution
+    while (!wifiMgr.connect()) {
+        Serial.println("WiFi connection failed! Retrying in 30 seconds...");
+        displayMgr.drawFullScreenMessage("WiFi Failed!\nRetrying in 30s...", 2, ST77XX_RED);
+        
+        // Countdown display
+        for (int i = 30; i > 0; i--) {
+            char msg[40];
+            snprintf(msg, sizeof(msg), "WiFi Failed!\nRetry in %ds...", i);
+            displayMgr.drawFullScreenMessage(msg, 2, ST77XX_RED);
+            delay(1000);
+        }
+        
+        Serial.println("Retrying WiFi connection...");
+        displayMgr.drawFullScreenMessage("Connecting WiFi...", 2, ST77XX_YELLOW);
     }
     
     // Initialize current status
