@@ -59,6 +59,7 @@ Before uploading, configure the settings within the desired `.ino` file (e.g., `
 ## Files Overview
 
 *   **`fox_energy1_st7789_display_v3.ino`:** Current stable, reworked code with flicker-free display. Recommended starting point.
+*   **`kde_plasma_6_widget/com.local.foxenergy1monitor`:** KDE Plasma 6 widget
 
 Other version for testing purposes:
 
