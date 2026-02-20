@@ -14,12 +14,10 @@ PlasmoidItem {
     property string powerReactive: "0.0"
     property string frequency: "0.0"
     property string powerFactor: "0.0"
-
-    // Set preferred sizes for Desktop mode
+    
     Layout.minimumWidth: 200
     Layout.minimumHeight: 200
 
-    // Fetch data every 5 seconds
     Timer {
         id: dataTimer
         interval: 5000 
@@ -31,7 +29,8 @@ PlasmoidItem {
 
     function fetchData() {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://192.168.0.101/0000/get_current_parameters", true);
+        // Use the user's configured URL instead of hardcoding it
+        xhr.open("GET", Plasmoid.configuration.apiUrl, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
@@ -59,7 +58,6 @@ PlasmoidItem {
         xhr.send();
     }
 
-    // Logic to format watts to kW and use a comma
     function formatPowerText(watts) {
         if (watts >= 1000) {
             return (watts / 1000).toFixed(1).replace(".", ",") + " kW";
@@ -67,15 +65,14 @@ PlasmoidItem {
         return Math.round(watts) + " W";
     }
 
-    // Logic for color coding
     function getPowerColor(watts) {
-        if (watts >= 4000) return "#ff4a4a"; // Red
-        if (watts >= 2500) return "#ffb000"; // Orange
-        return "#00cc66";                    // Green
+        // Use user's configured thresholds
+        if (watts >= Plasmoid.configuration.thresholdRed) return "#ff4a4a";
+        if (watts >= Plasmoid.configuration.thresholdOrange) return "#ffb000";
+        return "#00cc66"; 
     }
 
-    // --- TASKBAR MODE (Compact) ---
-    // Notice how it's no longer Plasmoid.compactRepresentation
+    // TASKBAR MODE (Compact)
     compactRepresentation: Item {
         Layout.minimumWidth: compactLabel.implicitWidth + 10
         Layout.minimumHeight: compactLabel.implicitHeight
@@ -86,18 +83,17 @@ PlasmoidItem {
             text: root.formatPowerText(root.powerActive)
             color: root.getPowerColor(root.powerActive)
             font.bold: true
-            font.pixelSize: 14
+            // Use user's configured text size
+            font.pixelSize: Plasmoid.configuration.textSize
         }
 
-        // Allow clicking the taskbar text to open the popup window
         MouseArea {
             anchors.fill: parent
             onClicked: root.expanded = !root.expanded
         }
     }
 
-    // --- DESKTOP / POPUP MODE (Full) ---
-    // Notice how it's no longer Plasmoid.fullRepresentation
+    // DESKTOP MODE (Full)
     fullRepresentation: Item {
         Layout.minimumWidth: 250
         Layout.minimumHeight: 220
@@ -107,46 +103,76 @@ PlasmoidItem {
             anchors.margins: 10
             spacing: 10
 
-            // Header / Status
             PlasmaComponents.Label {
                 text: "Energy Monitor (" + root.statusText + ")"
                 font.bold: true
+                font.pixelSize: Plasmoid.configuration.desktopTextSize
                 Layout.alignment: Qt.AlignHCenter
             }
 
-            // Data Grid
             GridLayout {
                 columns: 2
                 columnSpacing: 15
                 rowSpacing: 5
                 Layout.fillWidth: true
 
-                // Active Power (Colored)
-                PlasmaComponents.Label { text: "Active Power:" }
+                PlasmaComponents.Label { 
+                    text: "Active Power:"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
                 PlasmaComponents.Label {
                     text: root.formatPowerText(root.powerActive)
                     color: root.getPowerColor(root.powerActive)
                     font.bold: true
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
                 }
 
-                // Other stats
-                PlasmaComponents.Label { text: "Voltage:" }
-                PlasmaComponents.Label { text: root.voltage + " V" }
+                PlasmaComponents.Label { 
+                    text: "Voltage:"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
+                PlasmaComponents.Label { 
+                    text: root.voltage + " V"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
 
-                PlasmaComponents.Label { text: "Current:" }
-                PlasmaComponents.Label { text: root.current + " A" }
+                PlasmaComponents.Label { 
+                    text: "Current:"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
+                PlasmaComponents.Label { 
+                    text: root.current + " A"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
 
-                PlasmaComponents.Label { text: "Reactive Power:" }
-                PlasmaComponents.Label { text: root.powerReactive + " var" }
+                PlasmaComponents.Label { 
+                    text: "Reactive Power:"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
+                PlasmaComponents.Label { 
+                    text: root.powerReactive + " var"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
 
-                PlasmaComponents.Label { text: "Frequency:" }
-                PlasmaComponents.Label { text: root.frequency + " Hz" }
+                PlasmaComponents.Label { 
+                    text: "Frequency:"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
+                PlasmaComponents.Label { 
+                    text: root.frequency + " Hz"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
 
-                PlasmaComponents.Label { text: "Power Factor:" }
-                PlasmaComponents.Label { text: root.powerFactor }
+                PlasmaComponents.Label { 
+                    text: "Power Factor:"
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
+                PlasmaComponents.Label { 
+                    text: root.powerFactor
+                    font.pixelSize: Plasmoid.configuration.desktopTextSize
+                }
             }
-            
-            Item { Layout.fillHeight: true } // Spacer
+            Item { Layout.fillHeight: true }
         }
     }
 }

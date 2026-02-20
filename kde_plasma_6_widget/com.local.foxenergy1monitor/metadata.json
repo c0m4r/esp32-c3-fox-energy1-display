@@ -10,8 +10,12 @@
         "Icon": "preferences-system-power-management",
         "Id": "com.local.foxenergy1monitor",
         "Name": "Fox Energy1 Monitor",
-        "Version": "1.0"
+        "Version": "1.0",
+        "License": "CC0-1.0",
+        "Website": "https://github.com/c0m4r/esp32-c3-fox-energy1-display",
+        "BugReportUrl": "https://github.com/c0m4r/esp32-c3-fox-energy1-display/issues"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
-    "X-Plasma-MainScript": "ui/main.qml"
+    "X-Plasma-MainScript": "ui/main.qml",
+    "KPackageStructure": "Plasma/Applet"
 }

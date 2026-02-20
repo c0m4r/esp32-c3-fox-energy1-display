@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name=""/>
+    <group name="General">
+        <entry name="apiUrl" type="String">
+            <default>http://192.168.0.101/0000/get_current_parameters</default>
+        </entry>
+        <entry name="textSize" type="Int">
+            <default>14</default>
+        </entry>
+        <entry name="desktopTextSize" type="Int">
+            <default>12</default>
+        </entry>
+        <entry name="thresholdOrange" type="Int">
+            <default>2500</default>
+        </entry>
+        <entry name="thresholdRed" type="Int">
+            <default>4000</default>
+        </entry>
+    </group>
+</kcfg>
