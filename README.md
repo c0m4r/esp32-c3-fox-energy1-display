@@ -6,6 +6,8 @@
 
 This project utilizes an ESP32-C3 microcontroller and an ST7789 TFT display to create a real-time energy monitor. It connects to a local Wi-Fi network, fetches power metrics (Voltage, Current, Active Power) from a Fox Energy1 HTTP REST API endpoint, and displays the data along with the current time (synced via NTP), internal chip temperature, and Wi-Fi signal strength.
 
+Energy meter used: [1-phase energy consumption monitor wi-fi ENERGY-1](https://www.fif.com.pl/en/fox-wi-fi-control/1448-1-phase-energy-consumption-monitor-wi-fi-energy-1.html)
+
 ## Features
 
 ## Hardware Requirements
